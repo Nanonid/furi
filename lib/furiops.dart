@@ -1,5 +1,8 @@
 
 part of furi;
+/**
+ * FUriOps contains the functor support for FUri.
+ */
 
 /**
  * Functor signature for return a String representation.
@@ -9,7 +12,7 @@ abstract class ToStringOp implements Function {
 }
 
 /**
- * FUri functor signature that returns a String representation
+ * FUriOp functor signature that returns a String representation
  * given a FUri and some dynamic key.
  * For Path, key is an integer.
  * For Query, key *may* the query parameter key.
@@ -21,7 +24,7 @@ abstract class FUriOp implements Function {
 }
 
 /**
- * SQuriOp holds and evals() to a public String value.
+ * SFuriOp holds and evals() to a public String value.
  * Used as default paths() implementation via ps();
  */
 class SFUriOp extends FUriOp {
@@ -65,6 +68,8 @@ class FUriMapOp extends FUriOp {
 
 /**
  * KVFUriMap collection of FUriOp for Query mapping, not Path.
+ * KVFUriMap builds the query string from contents, and acts as
+ * a FUriOp functor.
  */
 class KVFUriMap<TKey> extends MapMixin<TKey,FUriOp> with FUriOp {
   Map<TKey,FUriOp> _map = new Map<TKey,FUriOp>();
@@ -88,6 +93,9 @@ class KVFUriMap<TKey> extends MapMixin<TKey,FUriOp> with FUriOp {
   void clear() => _map.clear();
 }
 
+/**
+ * SVFUriMap default Map<String,FUriOp> implementation.
+ */
 class SVFUriMap extends KVFUriMap<String>{
   SVFUriMap() : super.fromMap( new Map<String,FUriOp>() );
   SVFUriMap.fromMap( Map<String,FUriOp> map ): super.fromMap(map);
@@ -116,7 +124,12 @@ class SVFUriMap extends KVFUriMap<String>{
 }
 
 /**
- * JSFUriOp
+ * JSFUriOp 
+ * TODO JSON Codec support
+ */
+
+/**
+ * Return an empty string where null or exception.
  */
 String _emptyNullToString( dynamic value_ ){
   if( value_ == null ) return "";

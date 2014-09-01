@@ -1,26 +1,29 @@
 library furi;
-
-
-import 'dart:convert';
-
-import 'dart:collection';
-
-part 'furiops.dart';
-
 /**
  * FUri -- the functional URI.
  * FUri exposes the building blocks of the core URI but with a
  * functional interface.
  * Values of the URI can then be derived, such as accessors or calculated.
+ * 
+ * TODO provide Map/List mixin for query parameters with repeating keys.
  */
-class FUri {
+
+import 'dart:convert';
+import 'dart:collection';
+
+part 'furiops.dart';
+
+
+class FUri extends ToStringOp {
   
   String call() {
      return uri.toString();
   }
-   
-  Uri get uri => build();
   
+  Uri get uri => build();
+  /**
+   * build URI on demand, but do not use queryParameters which is always a map.
+   */
   Uri build(){
     Uri uri = new Uri( scheme:scheme, userInfo:userInfo, host:host,
         port:port, pathSegments:pathSegments,
@@ -152,7 +155,7 @@ class FUri {
    * Because URI spec allows multiple identical query key values,
    * the Map collections unique key design should not be forced.
    */
-  factory FUri( {String scheme, String userInfo: "", 
+  FUri( {String scheme, String userInfo: "", 
     String host, int port, 
     Iterable<String> pathSegments, 
     Map<String, dynamic> queryParameters, String fragment}){
@@ -167,10 +170,24 @@ class FUri {
     if( fragment != null ){
       frag = new SFUriOp(fragment);
     }
-    FUri suri = new FUri._internal(scheme,userInfo,host,port,
-        strToOp(pathSegments),queryOp,frag);
-    return suri;
+    _scheme = scheme;
+    _userInfo = userInfo;
+    _host = host;
+    _port = port;
+    _paths = strToOp(pathSegments);
+    _queryOp = queryOp;
+    _fragOp = frag;
   }
+  
+  
+  /// Non-verifying constructor. Only call with validated arguments.
+  FUri.assign(this._scheme,
+                this._userInfo,
+                this._host,
+                this._port,
+                this._paths,
+                this._queryOp,
+                this._fragOp);
   
   static Iterable<FUriOp> strToOp( Iterable<String> i_ ){
     List<FUriOp> res = new List<FUriOp>();
@@ -356,14 +373,6 @@ class FUri {
     });
     return result.toString();
   }
-  
-  /// Internal non-verifying constructor. Only call with validated arguments.
-  FUri._internal(this._scheme,
-                this._userInfo,
-                this._host,
-                this._port,
-                this._paths,
-                this._queryOp,
-                this._fragOp);
+
 
 }
