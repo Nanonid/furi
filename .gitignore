@@ -1,0 +1,18 @@
+#pub created
+build/
+packages/
+web/
+
+# dart2js files
+*.dart.js
+*.dart.precompiled.js
+*.js_
+*.js.deps
+*.js.map
+
+pubspec.lock
+
+# IntelliJ
+.project
+*.iml
+

@@ -1,0 +1,18 @@
+name: furi
+version: 0.0.1
+author: Nanonid
+description: |-
+  #FUri -- the functional URI.
+
+  `FUri` exposes the building blocks of the `dart:core` `Uri` but with a functional interface.
+
+  `Uri` Path and Query can then be derived, such as accessors or calculated values.
+
+  `FUri` also exposes some of the interfaces hidden within `Uri` making it easier to write your own URI class.
+
+  `FUri` depends on the `FUriOp` functor class with the signature `String call( FUri uri_, dynamic key_)` to evaluate Query and Path.
+
+  `FUri` production depends _only_ on `dart:core`; non-intrusive.
+homepage: https://github.com/Nanonid/furi
+dev_dependencies:
+  unittest: any
