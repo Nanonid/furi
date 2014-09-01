@@ -1,5 +1,7 @@
 #FUri -- the functional URI.
 
+![Build Status](https://drone.io/github.com/Nanonid/furi/status.png)](https://drone.io/github.com/Nanonid/furi/latest)
+
 `FUri` exposes the building blocks of the `dart:core` `Uri` but with a functional interface.
 
 `Uri` Path and Query can then be derived, such as accessors or calculated values.
