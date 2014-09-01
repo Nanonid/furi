@@ -1,7 +1,9 @@
 name: furi
-version: 0.0.1
+version: 0.0.2
 author: Nanonid <eric.lindahl.tab@gmail.com>
-description: FUri -- the functional URI; exposes the building blocks of the core with a functional interface.
+description: |-
+  FUri - the functional URI
+  Exposes the dart:core URI with a fluent functional interface.
 homepage: https://github.com/Nanonid/furi
 dev_dependencies:
   unittest: any
