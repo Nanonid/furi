@@ -2,6 +2,8 @@ import "package:unittest/unittest.dart";
 
 import "package:furi/furi.dart";
 
+import "test_furi_op.dart" as furiop;
+
 class TestObj {
   String _value1;
   String _value2;
@@ -28,6 +30,7 @@ class Obj {
 }
 
 void main(){
+  furiop.main();
   group( "fluent", (){
     test( "string path ops", (){
       FUri uri = new FUri( scheme:"http")

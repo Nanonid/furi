@@ -1,30 +1,46 @@
-
-part of furi;
 /**
  * FUriOps contains the functor support for FUri.
  */
+part of furi;
+
 
 /**
- * Functor signature for return a String representation.
+ * Functor signature for returning a String, with 0-arg call.
+ * eg.
+ *      class SMTest extends ToStringOp {
+ *        String value;
+ *        SMTest( this.value );
+ *        String call() => value;
+ *      }
+ *      expect( new SMTest("readme example")(), equals("readme example") );
  */
 abstract class ToStringOp implements Function {
+  /**
+   * evaluate to a string.
+   */
   String call();
 }
 
 /**
  * FUriOp functor signature that returns a String representation
  * given a FUri and some dynamic key.
- * For Path, key is an integer.
- * For Query, key *may* the query parameter key.
- * However, because the query parameters may have repeated keys,
- * the map collection design should not be forced.
+ *  * For Path, key is an integer.
+ *  * For Query, key *may* the query parameter key.
+ *  * However, because the query parameters may have repeated keys, the map collection design should not be forced.
+ *  
+ *     class FUriOpTest extends FUriOp {
+ *        String value;
+ *        FUriOpTest( this.value );
+ *        String call(FUri uri_, dynamic key_) => "${value},${key_}";
+ *      }
+ *      expect( new FUriOpTest("readme example")(null,"key"), equals("readme example,key") );
  */
 abstract class FUriOp implements Function {
   String call( FUri uri_, dynamic key_ );
 }
 
 /**
- * SFuriOp holds and evals() to a public String value.
+ * SFuriOp holds and evals() to a public `String value`.
  * Used as default paths() implementation via ps();
  */
 class SFUriOp extends FUriOp {
@@ -48,6 +64,7 @@ class F0FUriOp extends FUriOp {
 
 /**
  * FUriMapOp arbitrary toString Query mapping, not Path.
+ *       expect( new FUriMapOp({"k1":"v1","k2":"v2"})(null,null), equals("k1=v1&k2=v2") );
  */
 class FUriMapOp extends FUriOp {
   Map _map;

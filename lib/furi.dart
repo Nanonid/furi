@@ -1,12 +1,21 @@
-library furi;
 /**
  * FUri -- the functional URI.
+ * 
  * FUri exposes the building blocks of the core URI but with a
  * functional interface.
+ * 
  * Values of the URI can then be derived, such as accessors or calculated.
+ * 
+ * The goal of FUri is to support data binding and dynamic contextual URI production
+ * useful for dynamic queries or update REST services.
+ * 
+ * * FURi depends _only_ on core `dart` libs; non-intrusive.
+ * * FURi attempts to expose underlying URI building library (fork), but with some functional baggage.
+ * * FUri can be extended to provide your own REST URI production.
  * 
  * TODO provide Map/List mixin for query parameters with repeating keys.
  */
+library furi;
 
 import 'dart:convert';
 import 'dart:collection';
