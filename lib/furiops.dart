@@ -58,7 +58,23 @@ class F0FUriOp extends FUriOp {
   var func;
   F0FUriOp( this.func );
   String call( FUri uri_, dynamic key_ ){
-    return _emptyNullToString( func() );
+    return func();
+  }
+}
+
+/**
+ * Typedef for single dynamic key function
+ */
+typedef String FKeyFunc( dynamic key_ );
+
+/**
+ * FKeyFUriOp call function passing only key.
+ */
+class FKeyFUriOp extends FUriOp {
+  FKeyFunc func;
+  FKeyFUriOp( this.func );
+  String call( FUri uri_, dynamic key_ ){
+    return func(key_);
   }
 }
 
@@ -71,8 +87,11 @@ class FUriMapOp extends FUriOp {
   FUriMapOp( this._map );
   Map<String,String> reduce(FUri uri_){
     Map<String,String> reduced = new Map<String,String>();
-    _map.forEach( (k,v) => reduced.putIfAbsent(
-        _emptyNullToString(k), ()=> _emptyNullToString(v)) );
+    _map.forEach( (k,v) {
+      if( k != null && k.isNotEmpty && v != null ){
+        reduced.putIfAbsent(k, ()=> v.toString());
+      }
+    });
     return reduced;
   }
   String call( FUri uri_, dynamic key_ ){
@@ -94,7 +113,13 @@ class KVFUriMap<TKey> extends MapMixin<TKey,FUriOp> with FUriOp {
   KVFUriMap.fromMap( this._map );
   Map<String,String> reduce(FUri uri_){
     Map<String,String> reduced = new Map<String,String>();
-    _map.forEach( (k,op) => reduced.putIfAbsent(k.toString(), ()=>op(uri_,k)) );
+    _map.forEach( (k,op) {
+      String val = op(uri_,k);
+      String key = k!=null?k.toString():null;
+      if( key != null && val != null ){
+        reduced.putIfAbsent(key, ()=>val );
+      }
+    } );
     return reduced;
   }
   String call( FUri uri_, dynamic key_ ){
@@ -130,7 +155,10 @@ class SVFUriMap extends KVFUriMap<String>{
   }
   
   operator []=(String key_, dynamic value_) {
-    if( value_ is String ){
+    if( key_ == null || key_.isEmpty ){
+      throw new ArgumentError("Key is null or empty");
+    }
+    if( value_ is String  ){
       return putIfAbsent(key_, ()=> new SFUriOp(value_));
     }
     if( value_ is FUriOp ) {
@@ -145,15 +173,4 @@ class SVFUriMap extends KVFUriMap<String>{
  * TODO JSON Codec support
  */
 
-/**
- * Return an empty string where null or exception.
- */
-String _emptyNullToString( dynamic value_ ){
-  if( value_ == null ) return "";
-  try{
-    return value_.toString();
-  }catch( e ){
-    return "";
-  }
-}
 

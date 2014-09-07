@@ -88,6 +88,25 @@ void main(){
       uri.qkf( "wt", obj.format );
       expect( uri.uri.toString(), equals("http://host:100/path1/path2/path3?key1=value1&key2=value2&key3=value3&key4=value4&key5=value5&key6=value6&q=%2A%3A%2A&wt=json") );
     });
+ 
+    test( "null and empty components path/query ops", (){
+      TestObj obj = new TestObj("value1",null);
+      FUri uri = new FUri( scheme:"http", host:"host", port:100, pathSegments:["path1"])
+        ..pf( ()=>obj.value2 )
+        ..pf( ()=>null )
+        ..pf( ()=>"" )
+        ..pf( ()=>obj.pathi(4) )
+        ..qkf("key1",()=>obj.value1)
+        ..qkf("key2",()=>obj.value2)
+        ..qkf("key3",()=>obj.value3)
+        ..qkf("key4",()=>null)
+        ..qkf("key5",()=>"")
+        ..qkf("key6",()=>obj.calcI(6))
+        ;
+      uri.qkf( "q", obj.query );
+      uri.qkf( "wt", obj.format );
+      expect( uri.uri.toString(), equals("http://host:100/path1/path4?key1=value1&key3=value3&key5=&key6=value6&q=%2A%3A%2A&wt=json") );
+    });
     
     test( "the readme example", (){
       Obj obj = new Obj("value1");

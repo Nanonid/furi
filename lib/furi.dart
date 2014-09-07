@@ -23,11 +23,7 @@ import 'dart:collection';
 part 'furiops.dart';
 
 
-class FUri extends ToStringOp {
-  
-  String call() {
-     return uri.toString();
-  }
+class FUri {
   
   Uri get uri => build();
   /**
@@ -106,7 +102,7 @@ class FUri extends ToStringOp {
   
   Iterable<String> get pathSegments{
     int i = 0;
-    return paths.map( (op) => op(this,i++) );
+    return paths.map( (op) => op(this,i++) ).where( (s) => s != null && s.isNotEmpty );
   }
   
   FUriOp _queryOp;
@@ -331,8 +327,7 @@ class FUri extends ToStringOp {
   static String makePath( Iterable<String> pathSegments,
                           bool ensureLeadingSlash,
                           bool isFile) {
-
-    var result = pathSegments.map((s) => uriEncode(pathCharTable, s)).join("/");
+    var result = pathSegments.where( (s)=> s != null && s.isNotEmpty ).map((s) => uriEncode(pathCharTable, s)).join("/");
 
     if (result.isEmpty) {
       if (isFile) return "/";
@@ -363,21 +358,30 @@ class FUri extends ToStringOp {
     return Uri.splitQueryString(query_, encoding:encoding_);
   }
   
+  static bool encodeQueryKV( StringBuffer buff_, String key_, String value_ ){
+    if( key_ == null || key_.isEmpty || buff_ == null ){
+      return false;
+    }
+    buff_.write(Uri.encodeQueryComponent(key_));
+    if (buff_.isNotEmpty) {
+      buff_.write("=");
+      buff_.write(Uri.encodeQueryComponent(value_));
+    }
+    return true;
+  }
+  
   static String makeQuery( Map<String, String> queryParams_) {
     if (queryParams_ == null) return null;
     if ( queryParams_.isEmpty ) return null;
 
     var result = new StringBuffer();
-    var first = true;
+    var cnt = 0;
     queryParams_.forEach((key, value) {
-      if (!first) {
+      if (cnt > 0) {
         result.write("&");
       }
-      first = false;
-      result.write(Uri.encodeQueryComponent(key));
-      if (value != null && !value.isEmpty) {
-        result.write("=");
-        result.write(Uri.encodeQueryComponent(value));
+      if( encodeQueryKV(result,key,value) ){
+        cnt++;
       }
     });
     return result.toString();
