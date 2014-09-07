@@ -1,5 +1,5 @@
 name: furi
-version: 0.0.2+1
+version: 0.0.3
 author: Nanonid <eric.lindahl.tab@gmail.com>
 description: |-
   FUri - the functional URI
